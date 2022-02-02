@@ -1,0 +1,42 @@
+version: '2'
+services:
+  swagger:
+    image: swaggerapi/swagger-ui:latest
+    volumes:
+      - "./docs/swagger.yaml:/app/swagger.yaml"
+    ports:
+      - 3000:8080
+    environment:
+      SWAGGER_JSON: /app/swagger.yaml
+
+  database:
+    image: postgres:latest
+    volumes:
+      - "./.docker-data/db:/var/lib/postgresql/data"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ip2location
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - api-net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: go run ./cmd/api
+    networks:
+      - api-net
+
+networks:
+  api-net:
+    driver: bridge
