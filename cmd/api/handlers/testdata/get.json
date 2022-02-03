@@ -1,0 +1,15 @@
+{
+  "ip": "181.192.10.182",
+  "proxy_type": "PUB",
+  "country": {
+    "code": "AR",
+    "name": "Argentina",
+    "region": "Ciudad Autonoma de Buenos Aires",
+    "city": "Buenos Aires"
+  },
+  "isp": "CTL LATAM",
+  "domain": "centurylink.com",
+  "usage": "ISP",
+  "asn": 3356,
+  "as": "Level 3 Parent LLC"
+}

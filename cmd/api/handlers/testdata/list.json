@@ -1,0 +1,37 @@
+[
+  {
+    "ip": "128.65.194.136",
+    "country": {
+      "name": "Switzerland",
+      "city": "Carouge"
+    }
+  },
+  {
+    "ip": "128.65.195.22",
+    "country": {
+      "name": "Switzerland",
+      "city": "Zurich"
+    }
+  },
+  {
+    "ip": "128.65.195.24",
+    "country": {
+      "name": "Switzerland",
+      "city": "Zurich"
+    }
+  },
+  {
+    "ip": "128.65.195.180",
+    "country": {
+      "name": "Switzerland",
+      "city": "Zurich"
+    }
+  },
+  {
+    "ip": "129.129.227.43",
+    "country": {
+      "name": "Switzerland",
+      "city": "Villigen"
+    }
+  }
+]

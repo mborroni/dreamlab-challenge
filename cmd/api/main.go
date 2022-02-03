@@ -2,15 +2,20 @@ package main
 
 import (
 	"github.com/mborroni/dreamlab-challenge/internal/application"
+	"net/http"
 )
 
 func main() {
-	server, err := NewServer()
+	server, err := newServer()
 	if err != nil {
 		panic(err)
 	}
-
-	engine, _ := application.Build()
-
-	routes(server.Router, engine)
+	engine, err := application.Build()
+	if err != nil {
+		panic(err)
+	}
+	routes(server, engine)
+	if err := http.ListenAndServe(":8081", server); err != nil {
+		panic(err)
+	}
 }

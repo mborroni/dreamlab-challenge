@@ -2,24 +2,13 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5"
-	"os"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
-type Server struct {
-	Environment string
-	Router      *chi.Mux
-}
-
-func NewServer() (*Server, error) {
-	environment := "local"
-	if env := os.Getenv("ENVIRONMENT"); env != "" {
-		environment = env
-	}
+func newServer() (*chi.Mux, error) {
 	router := chi.NewRouter()
-
-	server := &Server{
-		Environment: environment,
-		Router:      router,
-	}
-	return server, nil
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	return router, nil
 }
