@@ -324,7 +324,7 @@ func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 	}
 }
 
-func TestRepository_GetTopNISPByCountry(t *testing.T) {
+func TestRepository_GetTop10ISPByCountry(t *testing.T) {
 	db := getDB(t)
 	r := NewDBRepository(db.db)
 
@@ -334,7 +334,7 @@ func TestRepository_GetTopNISPByCountry(t *testing.T) {
 	}
 
 	type want struct {
-		result []*ISPCount
+		result []string
 		err    error
 	}
 
@@ -350,10 +350,10 @@ func TestRepository_GetTopNISPByCountry(t *testing.T) {
 				limit:   2,
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT isp, count(isp) AS total "+
-					"FROM ip2location_px7 WHERE country_name = $1 GROUP BY isp "+
-					"ODER BY total DESC LIMIT $2")).
-					WithArgs(fields.country, fields.limit).
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT isp, count(isp) + " +
+					"sum(ip_to - ip_from) as total FROM ip2location_px7 " +
+					"WHERE country_name = $1 GROUP BY isp ORDER BY total DESC LIMIT 10")).
+					WithArgs(fields.country).
 					WillReturnRows(sqlmock.NewRows(
 						[]string{"isp", "total"}).
 						AddRow("Rook Media GmbH", 180).
@@ -361,29 +361,25 @@ func TestRepository_GetTopNISPByCountry(t *testing.T) {
 					)
 			},
 			want: want{
-				result: []*ISPCount{
-					{
-						ISP:   "Rook Media GmbH",
-						Total: 180,
-					},
-					{
-						ISP:   "RapidSeedbox Ltd",
-						Total: 139,
-					},
+				result: []string{
+					"Rook Media GmbH",
+					"RapidSeedbox Ltd",
 				},
 				err: nil,
 			},
 		},
-		{name: "error",
+
+		{
+			name: "error",
 			fields: fields{
 				country: "Switzerland",
 				limit:   2,
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT isp, count(isp) AS total "+
-					"FROM ip2location_px7 WHERE country_name = $1 GROUP BY isp "+
-					"ODER BY total DESC LIMIT $2")).
-					WithArgs(fields.country, fields.limit).
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT isp, count(isp) + " +
+					"sum(ip_to - ip_from) as total FROM ip2location_px7 " +
+					"WHERE country_name = $1 GROUP BY isp ORDER BY total DESC LIMIT 10")).
+					WithArgs(fields.country).
 					WillReturnError(sql.ErrConnDone)
 			},
 			want: want{

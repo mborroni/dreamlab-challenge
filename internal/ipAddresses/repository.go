@@ -50,16 +50,17 @@ func (r *DBRepository) GetIPQuantityByCountry(ctx context.Context, country strin
 	return quantity, err
 }
 
-func (r *DBRepository) GetTopNISPByCountry(ctx context.Context, top int, country string) ([]*ISPCount, error) {
-	isps := make([]*ISPCount, 0)
-	rows, err := r.db.Query("SELECT isp, count(isp) AS total FROM ip2location_px7 WHERE country_name = $1 "+
-		"GROUP BY isp ODER BY total DESC LIMIT $2", country, top)
+func (r *DBRepository) GetTopNISPByCountry(ctx context.Context, top int, country string) ([]string, error) {
+	isps := make([]string, 0)
+	rows, err := r.db.Query("SELECT isp, count(isp) + sum(ip_to - ip_from) as total FROM ip2location_px7 "+
+		"WHERE country_name = $1 GROUP BY isp ORDER BY total DESC LIMIT 10", country)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		isp := &ISPCount{}
-		if err := rows.Scan(&isp.ISP, &isp.Total); err != nil {
+		var isp string
+		var total int
+		if err := rows.Scan(&isp, &total); err != nil {
 			return nil, err
 		}
 		isps = append(isps, isp)

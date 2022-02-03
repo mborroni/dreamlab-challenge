@@ -18,8 +18,3 @@ type Country struct {
 	Region string
 	City   string
 }
-
-type ISPCount struct {
-	ISP   string
-	Total int
-}
