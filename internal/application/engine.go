@@ -1,7 +1,22 @@
 package application
 
-type Engine struct{}
+import (
+	"database/sql"
+	ips "github.com/mborroni/dreamlab-challenge/internal/ipAddresses"
+)
+
+var (
+	db *sql.DB
+)
+
+type Engine struct {
+	AddressesService *ips.AddressesService
+}
 
 func Build() (*Engine, error) {
-	return &Engine{}, nil
+	buildDBConnections()
+
+	return &Engine{
+		AddressesService: buildAddressesService(),
+	}, nil
 }
