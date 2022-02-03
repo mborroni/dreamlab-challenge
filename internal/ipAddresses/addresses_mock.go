@@ -79,10 +79,10 @@ func (mr *MockrepositoryMockRecorder) GetIPQuantityByCountry(arg0, arg1 interfac
 }
 
 // GetTopNISPByCountry mocks base method
-func (m *Mockrepository) GetTopNISPByCountry(arg0 context.Context, arg1 int, arg2 string) ([]*ISPCount, error) {
+func (m *Mockrepository) GetTopNISPByCountry(arg0 context.Context, arg1 int, arg2 string) ([]string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTopNISPByCountry", arg0, arg1, arg2)
-	ret0, _ := ret[0].([]*ISPCount)
+	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
