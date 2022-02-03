@@ -15,7 +15,7 @@ func main() {
 		panic(err)
 	}
 	routes(server, engine)
-	if err := http.ListenAndServe(":8081", server); err != nil {
+	if err := http.ListenAndServe(":8080", server); err != nil {
 		panic(err)
 	}
 }

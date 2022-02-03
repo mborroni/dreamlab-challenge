@@ -7,20 +7,20 @@ import (
 )
 
 func buildDBConnections() {
-	rdb, err := sql.Open("postgres", dsn("user", "pwd", "host"))
+	rdb, err := sql.Open("postgres", dsn())
 	if err != nil {
 		panic(err)
 	}
 	db = rdb
 }
 
-func dsn(user, password, host string) string {
+func dsn() string {
 	return fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		"localhost",
-		"5432",
-		"postgres",
-		"password",
-		"ip2location",
+		"postgres://%v:%v@%v:%v/%v?sslmode=disable",
+		configs["user"],
+		configs["password"],
+		configs["database"],
+		configs["port"],
+		configs["dbname"],
 	)
 }

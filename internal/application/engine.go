@@ -6,7 +6,8 @@ import (
 )
 
 var (
-	db *sql.DB
+	db      *sql.DB
+	configs map[string]string
 )
 
 type Engine struct {
@@ -14,6 +15,7 @@ type Engine struct {
 }
 
 func Build() (*Engine, error) {
+	buildConfig()
 	buildDBConnections()
 
 	return &Engine{
