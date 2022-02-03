@@ -1,0 +1,331 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "IP2Location",
+    "version": "1.0",
+    "description": "IP2Location API Rest"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/v1/ips": {
+      "get": {
+        "summary": "List IPs",
+        "tags": [
+          "IPs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-list-Switzerland-IPs-limit-5": {
+                    "value": [
+                      {
+                        "ip": "128.65.194.136",
+                        "country": {
+                          "name": "Switzerland",
+                          "city": "Carouge"
+                        }
+                      },
+                      {
+                        "ip": "128.65.195.22",
+                        "country": {
+                          "name": "Switzerland",
+                          "city": "Zurich"
+                        }
+                      },
+                      {
+                        "ip": "128.65.195.24",
+                        "country": {
+                          "name": "Switzerland",
+                          "city": "Zurich"
+                        }
+                      },
+                      {
+                        "ip": "128.65.195.180",
+                        "country": {
+                          "name": "Switzerland",
+                          "city": "Zurich"
+                        }
+                      },
+                      {
+                        "ip": "129.129.227.43",
+                        "country": {
+                          "name": "Switzerland",
+                          "city": "Villigen"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-v1-ips",
+        "description": "Get IPs",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "country",
+            "description": "Filter by country"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "limit",
+            "description": "Limit list"
+          }
+        ]
+      }
+    },
+    "/v1/ips/{ip}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "168.100.0.1"
+          },
+          "name": "ip",
+          "in": "path",
+          "required": true,
+          "description": "IP"
+        }
+      ],
+      "get": {
+        "summary": "Get IP",
+        "tags": [
+          "IPs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ip": {
+                      "type": "string"
+                    },
+                    "proxy_type": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "region": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "isp": {
+                      "type": "string"
+                    },
+                    "domain": {
+                      "type": "string"
+                    },
+                    "usage": {
+                      "type": "string"
+                    },
+                    "asn": {
+                      "type": "number"
+                    },
+                    "as": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-IP": {
+                    "value": {
+                      "ip": "181.192.10.182",
+                      "proxy_type": "PUB",
+                      "country": {
+                        "code": "AR",
+                        "name": "Argentina",
+                        "region": "Ciudad Autonoma de Buenos Aires",
+                        "city": "Buenos Aires"
+                      },
+                      "isp": "CTL LATAM",
+                      "domain": "centurylink.com",
+                      "usage": "ISP",
+                      "asn": 3356,
+                      "as": "Level 3 Parent LLC"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-v1-ips-ip",
+        "description": "Get IP"
+      }
+    },
+    "/v1/ips/isps/top": {
+      "get": {
+        "summary": "Top 10 ISPS",
+        "tags": [
+          "IPs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "examples": {
+                  "example-top10-Switzerland-isps": {
+                    "value": [
+                      "Rook Media GmbH",
+                      "RapidSeedbox Ltd",
+                      "Sunrise UPC GmbH",
+                      "Swisscom AG",
+                      "Google LLC",
+                      "Private Layer Inc",
+                      "Datapark AG",
+                      "Zscaler Inc.",
+                      "Bluewin is an LIR and ISP in Switzerland.",
+                      "Microsoft Corporation"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-v1-ips-isps-top",
+        "description": "Top 10 ISPS",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "country",
+            "description": "Filter by country"
+          }
+        ]
+      }
+    },
+    "/v1/ips/quantity": {
+      "get": {
+        "summary": "Get IPs Quantity",
+        "tags": [
+          "IPs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "country": {
+                        "type": "string"
+                      },
+                      "quantity": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-v1-ips-quantity",
+        "description": "Get IPs quantity",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "country",
+            "description": "Filter by country"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "tags": [
+    {
+      "name": "IPs"
+    }
+  ]
+}
