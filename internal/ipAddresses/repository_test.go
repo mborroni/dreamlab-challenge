@@ -144,7 +144,7 @@ func TestRepository_Get(t *testing.T) {
 			expectations: func(fields fields) {
 				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, proxy_type, " +
 					"country_code, country_name, region_name, city_name, isp, domain, usage_type, " +
-					"asn, 'as' FROM ip2location_px7 WHERE ip_from <= $1 AND ip_to >= $1")).
+					"asn, \"as\" FROM ip2location_px7 WHERE ip_from <= $1 AND ip_to >= $1")).
 					WithArgs(fields.decimalIP).
 					WillReturnRows(sqlmock.NewRows(
 						[]string{"ip_from", "ip_to", "proxy_type", "country_code",
@@ -163,7 +163,7 @@ func TestRepository_Get(t *testing.T) {
 			expectations: func(fields fields) {
 				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, proxy_type, " +
 					"country_code, country_name, region_name, city_name, isp, domain, usage_type, " +
-					"asn, 'as' FROM ip2location_px7 WHERE ip_from <= $1 AND ip_to >= $1")).
+					"asn, \"as\" FROM ip2location_px7 WHERE ip_from <= $1 AND ip_to >= $1")).
 					WithArgs(fields.decimalIP).
 					WillReturnError(sql.ErrConnDone)
 			},
@@ -178,7 +178,7 @@ func TestRepository_Get(t *testing.T) {
 			},
 			expectations: func(fields fields) {
 				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, proxy_type, country_code, " +
-					"country_name, region_name, city_name, isp, domain, usage_type, asn, 'as' " +
+					"country_name, region_name, city_name, isp, domain, usage_type, asn, \"as\" " +
 					"FROM ip2location_px7 WHERE ip_from <= $1 AND ip_to >= $1")).
 					WithArgs(fields.decimalIP).
 					WillReturnRows(sqlmock.NewRows(

@@ -172,6 +172,16 @@ func TestAddressesHandler_GetTop10ISPByCountry(t *testing.T) {
 			},
 		},
 		{
+			name: "missing country query param",
+			fields: fields{
+				country: "",
+			},
+			expectations: func(fields fields) {},
+			want: want{
+				statusCode: http.StatusBadRequest,
+			},
+		},
+		{
 			name: "error",
 			fields: fields{
 				country: "Argentina",
@@ -251,6 +261,16 @@ func TestAddressesHandler_GetIPQuantityByCountry(t *testing.T) {
 			want: want{
 				statusCode: http.StatusOK,
 				testdata:   "./testdata/countryQuantity.json",
+			},
+		},
+		{
+			name: "missing country query param",
+			fields: fields{
+				country: "",
+			},
+			expectations: func(fields fields) {},
+			want: want{
+				statusCode: http.StatusBadRequest,
 			},
 		},
 		{

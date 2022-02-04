@@ -18,7 +18,7 @@ func NewDBRepository(db *sql.DB) *DBRepository {
 func (r *DBRepository) Get(ctx context.Context, decimalIP int64) (*IP, error) {
 	ip := &IP{}
 	row := r.db.QueryRow("SELECT ip_from, ip_to, proxy_type, country_code, "+
-		"country_name, region_name, city_name, isp, domain, usage_type, asn, 'as' "+
+		"country_name, region_name, city_name, isp, domain, usage_type, asn, \"as\" "+
 		"FROM ip2location_px7 WHERE ip_from <= $1 AND ip_to >= $1", decimalIP)
 	err := row.Scan(&ip.From, &ip.To, &ip.ProxyType, &ip.Country.Code, &ip.Country.Name,
 		&ip.Country.Region, &ip.Country.City, &ip.ISP, &ip.Domain, &ip.Usage, &ip.ASN, &ip.AS)
