@@ -51,6 +51,8 @@ Resolví todos los endpoints con queries a la DB por la cantidad de datos que co
 filtrarlos por código. Para mejorar las búsquedas podrían agregarse índices a la tabla, y tener cacheada la respuesta de los requests que más se realizan
 o de los requests realizados en los últimos 5 minutos.
 
+Todos los archivos están testeados salvo los destinados a bootstrap de la aplicación y las entidades. 
+
 ## Puntos a mejorar
 
 - El endpoint (1) devuelve 50 IPs pero sólo devuelve teniendo en cuenta el campo _ip_from_ no obtiene los conjuntos de IPs
