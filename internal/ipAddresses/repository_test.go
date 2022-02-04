@@ -51,31 +51,31 @@ func TestRepository_List(t *testing.T) {
 				filters: map[string]interface{}{"country": "Thailand"},
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery("SELECT ip_from, ip_to, "+
-					"country_name, city_name FROM ip2location_px7 WHERE country_name = $1 LIMIT $2").
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, "+
+					"country_name, city_name FROM ip2location_px7 WHERE country_name = $1 LIMIT $2")).
 					WithArgs(fields.filters["country"], fields.limit).
 					WillReturnRows(sqlmock.NewRows(
 						[]string{"ip_from", "ip_to", "country_name", "city_name"}).
-						AddRow(16810020, 16810020, "Thailand", "Pa Daet").
-						AddRow(16810046, 16810046, "Thailand", "Pa Daet"),
+						AddRow(16778241, 16778241, "Australia", "Melbourne").
+						AddRow(16778497, 16778497, "Australia", "Melbourne"),
 					)
 			},
 			want: want{
 				result: []*IP{
 					{
-						From: 16810020,
-						To:   16810020,
+						From: 16778241,
+						To:   16778241,
 						Country: Country{
-							Name: "Thailand",
-							City: "Pa Daet",
+							Name: "Australia",
+							City: "Melbourne",
 						},
 					},
 					{
-						From: 16810046,
-						To:   16810020,
+						From: 16778497,
+						To:   16778497,
 						Country: Country{
-							Name: "Thailand",
-							City: "Pa Daet",
+							Name: "Australia",
+							City: "Melbourne",
 						},
 					},
 				},
@@ -88,8 +88,8 @@ func TestRepository_List(t *testing.T) {
 				filters: map[string]interface{}{"country": "Australia"},
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery("SELECT ip_from, ip_to, country_name, "+
-					"city_name, FROM ip2location_px7 WHERE country_name = $1 LIMIT $2").
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, country_name, city_name "+
+					"FROM ip2location_px7 WHERE country_name = $1 LIMIT $2")).
 					WithArgs(fields.filters["country"], fields.limit).
 					WillReturnError(sql.ErrConnDone)
 			},
@@ -123,7 +123,6 @@ func TestRepository_List(t *testing.T) {
 func TestRepository_Get(t *testing.T) {
 	db := getDB(t)
 	r := NewDBRepository(db.db)
-
 	type fields struct {
 		decimalIP int64
 	}
@@ -132,7 +131,6 @@ func TestRepository_Get(t *testing.T) {
 		result *IP
 		err    error
 	}
-
 	tests := []struct {
 		name         string
 		fields       fields
@@ -226,11 +224,11 @@ func TestRepository_Get(t *testing.T) {
 				}
 			}
 			if err != tt.want.err {
-				t.Errorf("List() error = %v, wantErr %v", err, tt.want.err)
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.want.err)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want.result) {
-				t.Errorf("List() got = %v, want = %v", got, tt.want.result)
+				t.Errorf("Get() got = %v, want = %v", got, tt.want.result)
 			}
 		})
 	}
@@ -239,7 +237,6 @@ func TestRepository_Get(t *testing.T) {
 func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 	db := getDB(t)
 	r := NewDBRepository(db.db)
-
 	type fields struct {
 		country string
 	}
@@ -248,7 +245,6 @@ func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 		result int
 		err    error
 	}
-
 	tests := []struct {
 		name         string
 		fields       fields
@@ -314,11 +310,11 @@ func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 				}
 			}
 			if err != tt.want.err {
-				t.Errorf("List() error = %v, wantErr %v", err, tt.want.err)
+				t.Errorf("GetIPQuantityByCountry() error = %v, wantErr %v", err, tt.want.err)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want.result) {
-				t.Errorf("List() got = %v, want = %v", got, tt.want.result)
+				t.Errorf("GetIPQuantityByCountry() got = %v, want = %v", got, tt.want.result)
 			}
 		})
 	}
@@ -327,7 +323,6 @@ func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 func TestRepository_GetTop10ISPByCountry(t *testing.T) {
 	db := getDB(t)
 	r := NewDBRepository(db.db)
-
 	type fields struct {
 		country string
 		limit   int
@@ -337,7 +332,6 @@ func TestRepository_GetTop10ISPByCountry(t *testing.T) {
 		result []string
 		err    error
 	}
-
 	tests := []struct {
 		name         string
 		fields       fields
@@ -397,11 +391,11 @@ func TestRepository_GetTop10ISPByCountry(t *testing.T) {
 				}
 			}
 			if err != tt.want.err {
-				t.Errorf("List() error = %v, wantErr %v", err, tt.want.err)
+				t.Errorf("GetTop10ISPByCountry() error = %v, wantErr %v", err, tt.want.err)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want.result) {
-				t.Errorf("List() got = %v, want = %v", got, tt.want.result)
+				t.Errorf("GetTop10ISPByCountry() got = %v, want = %v", got, tt.want.result)
 			}
 		})
 	}

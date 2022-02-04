@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/golang/mock/gomock"
+	"github.com/mborroni/dreamlab-challenge/internal/conversion"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -14,7 +15,6 @@ func newMockAddressesService(ctrl *gomock.Controller) *AddressesService {
 }
 
 func TestAddressesService_Get(t *testing.T) {
-	ass := assert.New(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -50,21 +50,16 @@ func TestAddressesService_Get(t *testing.T) {
 				err: nil,
 			},
 		},
-		/* TODO fix {name: "invalid IP",
+		{name: "invalid IP",
 			fields: fields{
 				ip: "181.abc.9.182",
 			},
-			expectations: func(fields fields) {
-				service.repository.(*Mockrepository).
-					EXPECT().
-					Get(gomock.Any(), gomock.Any()).
-					Return(nil, conversion.NotIPv4{})
-			},
+			expectations: func(fields fields) {},
 			want: want{
 				ip:  nil,
 				err: conversion.NotIPv4{},
 			},
-		},*/
+		},
 		{name: "no content",
 			fields: fields{
 				ip: "181.44.9.182",
@@ -100,15 +95,14 @@ func TestAddressesService_Get(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.expectations(tt.fields)
 			got, err := service.Get(context.Background(), tt.fields.ip)
-			ass.EqualValues(tt.want.ip, got)
-			ass.IsType(tt.want.err, err)
-			ass.Equal(tt.want.err, err)
+			assert.EqualValues(t, tt.want.ip, got)
+			assert.IsType(t, tt.want.err, err)
+			assert.Equal(t, tt.want.err, err)
 		})
 	}
 }
 
 func TestAddressesService_List(t *testing.T) {
-	ass := assert.New(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -167,15 +161,14 @@ func TestAddressesService_List(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.expectations(tt.fields)
 			got, err := service.List(context.Background(), tt.fields.limit, tt.fields.filters)
-			ass.EqualValues(tt.want.ips, got)
-			ass.IsType(tt.want.err, err)
-			ass.Equal(tt.want.err, err)
+			assert.EqualValues(t, tt.want.ips, got)
+			assert.IsType(t, tt.want.err, err)
+			assert.Equal(t, tt.want.err, err)
 		})
 	}
 }
 
 func TestAddressesService_GetIPQuantityByCountry(t *testing.T) {
-	ass := assert.New(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -246,15 +239,14 @@ func TestAddressesService_GetIPQuantityByCountry(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.expectations(tt.fields)
 			got, err := service.GetIPQuantityByCountry(context.Background(), tt.fields.country)
-			ass.EqualValues(tt.want.quantity, got)
-			ass.IsType(tt.want.err, err)
-			ass.Equal(tt.want.err, err)
+			assert.EqualValues(t, tt.want.quantity, got)
+			assert.IsType(t, tt.want.err, err)
+			assert.Equal(t, tt.want.err, err)
 		})
 	}
 }
 
 func TestAddressesService_GetTopNISPByCountry(t *testing.T) {
-	ass := assert.New(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -322,9 +314,9 @@ func TestAddressesService_GetTopNISPByCountry(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.expectations(tt.fields)
 			got, err := service.GetTop10ISPByCountry(context.Background(), tt.fields.country)
-			ass.EqualValues(tt.want.quantity, got)
-			ass.IsType(tt.want.err, err)
-			ass.Equal(tt.want.err, err)
+			assert.EqualValues(t, tt.want.quantity, got)
+			assert.IsType(t, tt.want.err, err)
+			assert.Equal(t, tt.want.err, err)
 		})
 	}
 }
