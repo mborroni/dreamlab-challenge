@@ -50,6 +50,8 @@ validar por ej. seguridad, permisos, etc... Y de obtener en los middlewares info
 Resolví todos los endpoints con queries a la DB por la cantidad de datos que contiene asi evité traer datos a memoria todo el tiempo y
 filtrarlos en el código. 
 
+Todos los archivos están testeados salvo los destinados a bootstrap de la aplicación y las entidades. 
+
 ## Puntos a mejorar
 
 - ~~El endpoint (1) devuelve 50 IPs pero sólo devuelve teniendo en cuenta el campo _ip_from_ no obtiene los conjuntos de IPs
