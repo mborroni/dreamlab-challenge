@@ -107,7 +107,8 @@
             },
             "in": "query",
             "name": "country",
-            "description": "Filter by country"
+            "description": "Filter by country",
+            "required": true
           },
           {
             "schema": {
@@ -271,7 +272,8 @@
             },
             "in": "query",
             "name": "country",
-            "description": "Filter by country"
+            "description": "Filter by country",
+            "required": true
           }
         ]
       }
@@ -300,9 +302,23 @@
                       }
                     }
                   }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "country": "Switzerland",
+                      "quantity": 1398
+                    }
+                  }
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         },
         "operationId": "get-v1-ips-quantity",
@@ -314,7 +330,8 @@
             },
             "in": "query",
             "name": "country",
-            "description": "Filter by country"
+            "description": "Filter by country",
+            "required": true
           }
         ]
       }

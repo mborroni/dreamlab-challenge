@@ -6,7 +6,8 @@ import (
 )
 
 var (
-	db *sql.DB
+	db      *sql.DB
+	configs map[string]string
 )
 
 type Engine struct {
