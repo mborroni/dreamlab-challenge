@@ -20,7 +20,7 @@ import (
 type service interface {
 	List(context.Context, int, map[string]interface{}) ([]*ips.IP, error)
 	Get(context.Context, string) (*ips.IP, error)
-	GetTopNISPByCountry(context.Context, int, string) ([]string, error)
+	GetTop10ISPByCountry(context.Context, string) ([]string, error)
 	GetIPQuantityByCountry(context.Context, string) (int, error)
 }
 
@@ -36,14 +36,7 @@ func NewAddressesHandler(service service) *AddressesHandler {
 
 func (h *AddressesHandler) List(w http.ResponseWriter, r *http.Request) {
 	limit := obtainLimit(r.URL)
-	filters, err := obtainFilters(r.URL)
-	if err != nil {
-		log.WithContext(r.Context()).
-			WithFields(log.Fields{"event": "error getting filters"}).
-			Error(err)
-		_ = RespondJSON(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	filters := obtainFilters(r.URL)
 	ipAddresses, err := h.service.List(r.Context(), limit, filters)
 	if err != nil {
 		log.WithContext(r.Context()).
@@ -80,7 +73,11 @@ func (h *AddressesHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 func (h *AddressesHandler) GetTop10ISPByCountry(w http.ResponseWriter, r *http.Request) {
 	country := r.URL.Query().Get("country")
-	isps, err := h.service.GetTopNISPByCountry(r.Context(), 10, strings.Title(country))
+	if country == "" {
+		_ = RespondJSON(w, "missing country", http.StatusBadRequest)
+		return
+	}
+	isps, err := h.service.GetTop10ISPByCountry(r.Context(), strings.Title(country))
 	if err != nil {
 		log.WithContext(r.Context()).
 			WithFields(log.Fields{"event": "get top 10 ISPs"}).
@@ -142,14 +139,10 @@ func obtainLimit(u *url.URL) int {
 	return limit
 }
 
-func obtainFilters(u *url.URL) (map[string]interface{}, error) {
+func obtainFilters(u *url.URL) map[string]interface{} {
 	filters := make(map[string]interface{})
-	q, err := url.ParseQuery(u.RawQuery)
-	if err != nil {
-		return nil, err
-	}
-	if country := q.Get("country"); country != "" {
+	if country := u.Query().Get("country"); country != "" {
 		filters["country"] = strings.Title(country)
 	}
-	return filters, nil
+	return filters
 }

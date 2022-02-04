@@ -12,7 +12,7 @@ type repository interface {
 	List(context.Context, int, map[string]interface{}) ([]*IP, error)
 	Get(context.Context, int64) (*IP, error)
 	GetIPQuantityByCountry(context.Context, string) (int, error)
-	GetTopNISPByCountry(context.Context, int, string) ([]string, error)
+	GetTop10ISPByCountry(context.Context, string) ([]string, error)
 }
 
 type AddressesService struct {
@@ -55,6 +55,6 @@ func (s *AddressesService) GetIPQuantityByCountry(ctx context.Context, country s
 	return quantity, nil
 }
 
-func (s *AddressesService) GetTopNISPByCountry(ctx context.Context, top int, country string) ([]string, error) {
-	return s.repository.GetTopNISPByCountry(ctx, top, country)
+func (s *AddressesService) GetTop10ISPByCountry(ctx context.Context, country string) ([]string, error) {
+	return s.repository.GetTop10ISPByCountry(ctx, country)
 }

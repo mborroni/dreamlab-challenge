@@ -261,7 +261,6 @@ func TestAddressesService_GetTopNISPByCountry(t *testing.T) {
 	service := newMockAddressesService(ctrl)
 
 	type fields struct {
-		top     int
 		country string
 	}
 
@@ -278,13 +277,12 @@ func TestAddressesService_GetTopNISPByCountry(t *testing.T) {
 	}{
 		{name: "ok",
 			fields: fields{
-				top:     2,
 				country: "Switzerland",
 			},
 			expectations: func(fields fields) {
 				service.repository.(*Mockrepository).
 					EXPECT().
-					GetTopNISPByCountry(gomock.Any(), gomock.Any(), gomock.Any()).
+					GetTop10ISPByCountry(gomock.Any(), gomock.Any()).
 					Return([]string{
 						"Rook Media GmbH",
 						"RapidSeedbox Ltd", "Sunrise UPC GmbH",
@@ -306,13 +304,12 @@ func TestAddressesService_GetTopNISPByCountry(t *testing.T) {
 		},
 		{name: "error",
 			fields: fields{
-				top:     2,
 				country: "Switzerland",
 			},
 			expectations: func(fields fields) {
 				service.repository.(*Mockrepository).
 					EXPECT().
-					GetTopNISPByCountry(gomock.Any(), gomock.Any(), gomock.Any()).
+					GetTop10ISPByCountry(gomock.Any(), gomock.Any()).
 					Return(nil, sql.ErrConnDone)
 			},
 			want: want{
@@ -324,7 +321,7 @@ func TestAddressesService_GetTopNISPByCountry(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.expectations(tt.fields)
-			got, err := service.GetTopNISPByCountry(context.Background(), tt.fields.top, tt.fields.country)
+			got, err := service.GetTop10ISPByCountry(context.Background(), tt.fields.country)
 			ass.EqualValues(tt.want.quantity, got)
 			ass.IsType(tt.want.err, err)
 			ass.Equal(tt.want.err, err)

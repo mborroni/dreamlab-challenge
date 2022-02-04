@@ -260,7 +260,7 @@ func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 				country: "Argentina",
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT SUM(ip_to - ip_from + 1) AS " +
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT COALESCE(SUM(ip_to - ip_from + 1),0) AS " +
 					"quantity FROM ip2location_px7 WHERE country_name = $1")).
 					WithArgs(fields.country).
 					WillReturnRows(sqlmock.NewRows(
@@ -276,7 +276,7 @@ func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 				country: "Argentina",
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT SUM(ip_to - ip_from + 1) AS " +
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT COALESCE(SUM(ip_to - ip_from + 1),0) AS " +
 					"quantity FROM ip2location_px7 WHERE country_name = $1")).
 					WithArgs(fields.country).
 					WillReturnRows(sqlmock.NewRows(
@@ -292,7 +292,7 @@ func TestRepository_GetIPQuantityByCountry(t *testing.T) {
 				country: "Argentina",
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT SUM(ip_to - ip_from + 1) AS " +
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT COALESCE(SUM(ip_to - ip_from + 1),0) AS " +
 					"quantity FROM ip2location_px7 WHERE country_name = $1")).
 					WithArgs(fields.country).
 					WillReturnError(sql.ErrConnDone)
@@ -347,7 +347,6 @@ func TestRepository_GetTop10ISPByCountry(t *testing.T) {
 		{name: "ok",
 			fields: fields{
 				country: "Switzerland",
-				limit:   2,
 			},
 			expectations: func(fields fields) {
 				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT isp, count(isp) + " +
@@ -373,7 +372,6 @@ func TestRepository_GetTop10ISPByCountry(t *testing.T) {
 			name: "error",
 			fields: fields{
 				country: "Switzerland",
-				limit:   2,
 			},
 			expectations: func(fields fields) {
 				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT isp, count(isp) + " +
@@ -391,7 +389,7 @@ func TestRepository_GetTop10ISPByCountry(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.expectations(tt.fields)
-			got, err := r.GetTopNISPByCountry(context.Background(), tt.fields.limit, tt.fields.country)
+			got, err := r.GetTop10ISPByCountry(context.Background(), tt.fields.country)
 
 			if db.mock != nil {
 				if err := db.mock.ExpectationsWereMet(); err != nil {

@@ -44,13 +44,16 @@ func (r *DBRepository) List(ctx context.Context, limit int, filters map[string]i
 
 func (r *DBRepository) GetIPQuantityByCountry(ctx context.Context, country string) (int, error) {
 	var quantity int
-	row := r.db.QueryRow("SELECT SUM(ip_to - ip_from + 1) AS quantity FROM ip2location_px7 "+
-		"WHERE country_name = $1", country)
+	row := r.db.QueryRow("SELECT COALESCE(SUM(ip_to - ip_from + 1),0) AS quantity FROM ip2location_px7"+
+		" WHERE country_name = $1", country)
 	err := row.Scan(&quantity)
-	return quantity, err
+	if err != nil {
+		return 0, err
+	}
+	return quantity, nil
 }
 
-func (r *DBRepository) GetTopNISPByCountry(ctx context.Context, top int, country string) ([]string, error) {
+func (r *DBRepository) GetTop10ISPByCountry(ctx context.Context, country string) ([]string, error) {
 	isps := make([]string, 0)
 	rows, err := r.db.Query("SELECT isp, count(isp) + sum(ip_to - ip_from) as total FROM ip2location_px7 "+
 		"WHERE country_name = $1 GROUP BY isp ORDER BY total DESC LIMIT 10", country)

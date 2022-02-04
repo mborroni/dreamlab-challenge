@@ -160,7 +160,7 @@ func TestAddressesHandler_GetTop10ISPByCountry(t *testing.T) {
 			expectations: func(fields fields) {
 				handler.service.(*Mockservice).
 					EXPECT().
-					GetTopNISPByCountry(gomock.Any(), gomock.Any(), gomock.Any()).
+					GetTopNISPByCountry(gomock.Any(), gomock.Any()).
 					Return([]string{"Rook Media GmbH", "RapidSeedbox Ltd", "Sunrise UPC GmbH",
 						"Swisscom AG", "Google LLC", "Private Layer Inc", "Datapark AG",
 						"Zscaler Inc.", "Bluewin is an LIR and ISP in Switzerland.",
@@ -179,7 +179,7 @@ func TestAddressesHandler_GetTop10ISPByCountry(t *testing.T) {
 			expectations: func(fields fields) {
 				handler.service.(*Mockservice).
 					EXPECT().
-					GetTopNISPByCountry(gomock.Any(), gomock.Any(), gomock.Any()).
+					GetTopNISPByCountry(gomock.Any(), gomock.Any()).
 					Return(nil, errors.New("error"))
 			},
 			want: want{

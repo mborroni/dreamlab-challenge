@@ -78,17 +78,17 @@ func (mr *MockrepositoryMockRecorder) GetIPQuantityByCountry(arg0, arg1 interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIPQuantityByCountry", reflect.TypeOf((*Mockrepository)(nil).GetIPQuantityByCountry), arg0, arg1)
 }
 
-// GetTopNISPByCountry mocks base method
-func (m *Mockrepository) GetTopNISPByCountry(arg0 context.Context, arg1 int, arg2 string) ([]string, error) {
+// GetTop10ISPByCountry mocks base method
+func (m *Mockrepository) GetTop10ISPByCountry(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTopNISPByCountry", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "GetTop10ISPByCountry", arg0, arg1)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetTopNISPByCountry indicates an expected call of GetTopNISPByCountry
-func (mr *MockrepositoryMockRecorder) GetTopNISPByCountry(arg0, arg1, arg2 interface{}) *gomock.Call {
+// GetTop10ISPByCountry indicates an expected call of GetTop10ISPByCountry
+func (mr *MockrepositoryMockRecorder) GetTop10ISPByCountry(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopNISPByCountry", reflect.TypeOf((*Mockrepository)(nil).GetTopNISPByCountry), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTop10ISPByCountry", reflect.TypeOf((*Mockrepository)(nil).GetTop10ISPByCountry), arg0, arg1)
 }
