@@ -15,6 +15,7 @@ type Engine struct {
 }
 
 func Build() (*Engine, error) {
+	buildConfig()
 	buildDBConnections()
 
 	return &Engine{
