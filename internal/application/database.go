@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"os"
 )
 
 func buildDBConnections() {
@@ -15,12 +16,18 @@ func buildDBConnections() {
 }
 
 func dsn() string {
+	fmt.Print(os.Getenv("USER"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("DATABASE"),
+		os.Getenv("PORT"),
+		os.Getenv("DBNAME"))
+
 	return fmt.Sprintf(
 		"postgres://%v:%v@%v:%v/%v?sslmode=disable",
-		configs["user"],
-		configs["password"],
-		configs["database"],
-		configs["port"],
-		configs["dbname"],
+		os.Getenv("USER"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("DATABASE"),
+		os.Getenv("PORT"),
+		os.Getenv("DBNAME"),
 	)
 }

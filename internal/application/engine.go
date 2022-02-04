@@ -6,8 +6,7 @@ import (
 )
 
 var (
-	db      *sql.DB
-	configs map[string]string
+	db *sql.DB
 )
 
 type Engine struct {
@@ -15,10 +14,14 @@ type Engine struct {
 }
 
 func Build() (*Engine, error) {
-	buildConfig()
 	buildDBConnections()
 
 	return &Engine{
 		AddressesService: buildAddressesService(),
 	}, nil
+}
+
+func buildAddressesService() *ips.AddressesService {
+	repository := ips.NewDBRepository(db)
+	return ips.NewAddressesService(repository)
 }
