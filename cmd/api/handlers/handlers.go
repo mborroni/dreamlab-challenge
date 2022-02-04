@@ -91,6 +91,10 @@ func (h *AddressesHandler) GetTop10ISPByCountry(w http.ResponseWriter, r *http.R
 
 func (h *AddressesHandler) GetIPQuantityByCountry(w http.ResponseWriter, r *http.Request) {
 	country := r.URL.Query().Get("country")
+	if country == "" {
+		_ = RespondJSON(w, "missing country", http.StatusBadRequest)
+		return
+	}
 	quantity, err := h.service.GetIPQuantityByCountry(r.Context(), strings.Title(country))
 	if err != nil {
 		log.WithContext(r.Context()).
