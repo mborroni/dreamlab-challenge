@@ -26,7 +26,11 @@ func NewAddressesService(repository repository) *AddressesService {
 }
 
 func (s *AddressesService) List(ctx context.Context, limit int, filters map[string]interface{}) ([]*IP, error) {
-	return s.repository.List(ctx, limit, filters)
+	ips, err := s.repository.List(ctx, limit, filters)
+	if err != nil {
+		return nil, err
+	}
+	return split(ips), nil
 }
 
 func (s *AddressesService) Get(ctx context.Context, inputIP string) (*IP, error) {
@@ -57,4 +61,21 @@ func (s *AddressesService) GetIPQuantityByCountry(ctx context.Context, country s
 
 func (s *AddressesService) GetTop10ISPByCountry(ctx context.Context, country string) ([]string, error) {
 	return s.repository.GetTop10ISPByCountry(ctx, country)
+}
+
+func split(input []*IP) []*IP {
+	ips := make([]*IP, 0)
+	for _, ip := range input {
+		for i := ip.From; i <= ip.To; i++ {
+			ips = append(ips, &IP{
+				From: ip.From,
+				To:   ip.From,
+				Country: Country{
+					Name: ip.Country.Name,
+					City: ip.Country.City,
+				},
+			})
+		}
+	}
+	return ips
 }

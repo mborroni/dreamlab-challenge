@@ -28,7 +28,11 @@ func (r *DBRepository) Get(ctx context.Context, decimalIP int64) (*IP, error) {
 func (r *DBRepository) List(ctx context.Context, limit int, filters map[string]interface{}) ([]*IP, error) {
 	ips := make([]*IP, 0)
 	rows, err := r.db.Query("SELECT ip_from, ip_to, country_name, city_name "+
-		"FROM ip2location_px7 WHERE country_name = $1 LIMIT $2", filters["country"], limit)
+		"FROM (SELECT ip_from, ip_to, country_name, city_name, sum(ip_to - ip_from + 1) "+
+		"OVER (ORDER BY ip_to, ip_from) AS cumulativeIpSum "+
+		"FROM ip2location_px7 WHERE country_name = $1) AS cumulativeSum "+
+		"WHERE cumulativeIpSum <= $2  "+
+		"GROUP BY ip_from, ip_to, country_name, city_name", filters["country"], limit)
 	if err != nil {
 		return nil, err
 	}

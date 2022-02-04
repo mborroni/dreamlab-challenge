@@ -43,10 +43,40 @@ func TestAddressesService_Get(t *testing.T) {
 				service.repository.(*Mockrepository).
 					EXPECT().
 					Get(gomock.Any(), gomock.Any()).
-					Return(dummyIP1, nil)
+					Return(&IP{
+						From:      150178522,
+						To:        150178522,
+						ProxyType: "PUB",
+						Country: Country{
+							Code:   "AR",
+							Name:   "Argentina",
+							Region: "Ciudad Autonoma de Buenos Aires",
+							City:   "Buenos Aires",
+						},
+						ISP:    "CTL LATAM",
+						Domain: "centurylink.com",
+						Usage:  "ISP",
+						ASN:    3356,
+						AS:     "Level 3 Parent LLC",
+					}, nil)
 			},
 			want: want{
-				ip:  dummyIP1,
+				ip: &IP{
+					From:      150178522,
+					To:        150178522,
+					ProxyType: "PUB",
+					Country: Country{
+						Code:   "AR",
+						Name:   "Argentina",
+						Region: "Ciudad Autonoma de Buenos Aires",
+						City:   "Buenos Aires",
+					},
+					ISP:    "CTL LATAM",
+					Domain: "centurylink.com",
+					Usage:  "ISP",
+					ASN:    3356,
+					AS:     "Level 3 Parent LLC",
+				},
 				err: nil,
 			},
 		},
@@ -124,7 +154,8 @@ func TestAddressesService_List(t *testing.T) {
 		expectations func(fields fields)
 		want         want
 	}{
-		{name: "ok",
+		{
+			name: "ok",
 			fields: fields{
 				limit:   2,
 				filters: map[string]interface{}{"country": "Argentina"},
@@ -133,14 +164,91 @@ func TestAddressesService_List(t *testing.T) {
 				service.repository.(*Mockrepository).
 					EXPECT().
 					List(gomock.Any(), gomock.Any(), gomock.Any()).
-					Return([]*IP{dummyIP1, dummyIP2}, nil)
+					Return([]*IP{
+						{
+							From: 150178522,
+							To:   150178522,
+							Country: Country{
+								Name: "Argentina",
+								City: "Buenos Aires",
+							},
+						},
+						{
+							From: 417862038,
+							To:   417862038,
+							Country: Country{
+								Name: "Argentina",
+								City: "Cordoba",
+							},
+						},
+					}, nil)
 			},
 			want: want{
-				ips: []*IP{dummyIP1, dummyIP2},
+				ips: []*IP{
+					{
+						From: 150178522,
+						To:   150178522,
+						Country: Country{
+							Name: "Argentina",
+							City: "Buenos Aires",
+						},
+					},
+					{
+						From: 417862038,
+						To:   417862038,
+						Country: Country{
+							Name: "Argentina",
+							City: "Cordoba",
+						},
+					},
+				},
 				err: nil,
 			},
 		},
-		{name: "ok",
+		{name: "one column with all ips",
+			fields: fields{
+				limit:   2,
+				filters: map[string]interface{}{"country": "Argentina"},
+			},
+			expectations: func(fields fields) {
+				service.repository.(*Mockrepository).
+					EXPECT().
+					List(gomock.Any(), gomock.Any(), gomock.Any()).
+					Return([]*IP{
+						{
+							From: 150178522,
+							To:   150178523,
+							Country: Country{
+								Name: "Argentina",
+								City: "Buenos Aires",
+							},
+						},
+					}, nil)
+			},
+			want: want{
+				ips: []*IP{
+					{
+						From: 150178522,
+						To:   150178522,
+						Country: Country{
+							Name: "Argentina",
+							City: "Buenos Aires",
+						},
+					},
+					{
+						From: 150178522,
+						To:   150178522,
+						Country: Country{
+							Name: "Argentina",
+							City: "Buenos Aires",
+						},
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "error",
 			fields: fields{
 				limit:   2,
 				filters: map[string]interface{}{"country": "Argentina"},
@@ -320,39 +428,3 @@ func TestAddressesService_GetTopNISPByCountry(t *testing.T) {
 		})
 	}
 }
-
-var (
-	dummyIP1 = &IP{
-		From:      150178522,
-		To:        150178522,
-		ProxyType: "PUB",
-		Country: Country{
-			Code:   "AR",
-			Name:   "Argentina",
-			Region: "Ciudad Autonoma de Buenos Aires",
-			City:   "Buenos Aires",
-		},
-		ISP:    "CTL LATAM",
-		Domain: "centurylink.com",
-		Usage:  "ISP",
-		ASN:    3356,
-		AS:     "Level 3 Parent LLC",
-	}
-
-	dummyIP2 = &IP{
-		From:      417862038,
-		To:        417862038,
-		ProxyType: "PUB",
-		Country: Country{
-			Code:   "AR",
-			Name:   "Argentina",
-			Region: "Cordoba",
-			City:   "Cordoba",
-		},
-		ISP:    "Telecom Argentina S.A.",
-		Domain: "telecom.com.ar",
-		Usage:  "ISP/MOB",
-		ASN:    7303,
-		AS:     "Latin American and Caribbean IP address Regional Registry",
-	}
-)

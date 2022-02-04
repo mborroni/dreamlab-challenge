@@ -51,13 +51,17 @@ func TestRepository_List(t *testing.T) {
 				filters: map[string]interface{}{"country": "Thailand"},
 			},
 			expectations: func(fields fields) {
-				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, "+
-					"country_name, city_name FROM ip2location_px7 WHERE country_name = $1 LIMIT $2")).
+				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, country_name, city_name "+
+					"FROM (SELECT ip_from, ip_to, country_name, city_name, sum(ip_to - ip_from + 1) "+
+					"OVER (ORDER BY ip_to, ip_from) AS cumulativeIpSum "+
+					"FROM ip2location_px7 WHERE country_name = $1) AS cumulativeSum "+
+					"WHERE cumulativeIpSum <= $2  "+
+					"GROUP BY ip_from, ip_to, country_name, city_name")).
 					WithArgs(fields.filters["country"], fields.limit).
 					WillReturnRows(sqlmock.NewRows(
 						[]string{"ip_from", "ip_to", "country_name", "city_name"}).
 						AddRow(16778241, 16778241, "Australia", "Melbourne").
-						AddRow(16778497, 16778497, "Australia", "Melbourne"),
+						AddRow(16778497, 16778498, "Australia", "Melbourne"),
 					)
 			},
 			want: want{
@@ -72,7 +76,7 @@ func TestRepository_List(t *testing.T) {
 					},
 					{
 						From: 16778497,
-						To:   16778497,
+						To:   16778498,
 						Country: Country{
 							Name: "Australia",
 							City: "Melbourne",
@@ -89,7 +93,11 @@ func TestRepository_List(t *testing.T) {
 			},
 			expectations: func(fields fields) {
 				db.mock.ExpectQuery(regexp.QuoteMeta("SELECT ip_from, ip_to, country_name, city_name "+
-					"FROM ip2location_px7 WHERE country_name = $1 LIMIT $2")).
+					"FROM (SELECT ip_from, ip_to, country_name, city_name, sum(ip_to - ip_from + 1) "+
+					"OVER (ORDER BY ip_to, ip_from) AS cumulativeIpSum "+
+					"FROM ip2location_px7 WHERE country_name = $1) AS cumulativeSum "+
+					"WHERE cumulativeIpSum <= $2  "+
+					"GROUP BY ip_from, ip_to, country_name, city_name")).
 					WithArgs(fields.filters["country"], fields.limit).
 					WillReturnError(sql.ErrConnDone)
 			},

@@ -47,15 +47,14 @@ servicio sino que es un package con funciones asi como lo es el package `net`
 Realicé la obtención de datos del request en los handlers y no en los middlewares ya que estos últimos los suelo utilizar para
 validar por ej. seguridad, permisos, etc... Y de obtener en los middlewares información del request habría que pasarla a través del contexto.
 
-Resolví todos los endpoints con queries a la DB por la cantidad de datos que contiene para evitar traerlos a memoria todo el tiempo y
-filtrarlos por código. Para mejorar las búsquedas podrían agregarse índices a la tabla, y tener cacheada la respuesta de los requests que más se realizan
-o de los requests realizados en los últimos 5 minutos.
+Resolví todos los endpoints con queries a la DB por la cantidad de datos que contiene asi evité traer datos a memoria todo el tiempo y
+filtrarlos en el código. 
 
 ## Puntos a mejorar
 
-- El endpoint (1) devuelve 50 IPs pero sólo devuelve teniendo en cuenta el campo _ip_from_ no obtiene los conjuntos de IPs
+- ~~El endpoint (1) devuelve 50 IPs pero sólo devuelve teniendo en cuenta el campo _ip_from_ no obtiene los conjuntos de IPs
 entre _ip_from_ y _ip_to_. Una mejora sería obtener los registros contando cuántas IPs están guardadas en cada registro, porque
-puede darse el caso de que para un país existan 50 ips agrupadas en 20 columnas y el endpoint sólo devolverá 20.
+puede darse el caso de que para un país existan 50 ips agrupadas en 20 columnas y el endpoint sólo devolverá 20.~~
 
 - Mejorar el build de las queries para poder tener más parámetros opcionales (por ej. country en esta versión es un parámetro
 obligatorio cuando al ser un filtro tendría más sentido que sea opcional) Permitir más parámetros de filtrado.
@@ -68,3 +67,8 @@ Modificaría esto en un productivo o de desarrollo para guardar las contraseñas
 
 - Otro punto que va de la mano con el tema configuraciones es la posibilidad de tener distintas inicializaciones dependiendo del
 environment en el que se esté corriendo la aplicación, quizas se necesita levantar distintas rutas o no correr ciertos procesos internos.
+
+- Para mejorar las búsquedas habría que agregar índices a la tabla, también se podría cachear la respuesta de los request que más se realizan 
+o de los realizados en los últimos n minutos.
+Depende bastante de cuán consumida va a ser la aplicación, si necesita un response time alto o no, del contexto 
+en si. 
