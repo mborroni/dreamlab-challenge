@@ -1,4 +1,4 @@
-## Initialización
+## Inicialización
 
 Para correr el proyecto ejecutar en el working directory:
 
